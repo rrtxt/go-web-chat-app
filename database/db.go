@@ -28,6 +28,10 @@ func ConnectDB() {
 	db = client
 }
 
+func CloseDB(){
+	db.Close()
+}
+
 func GetDB() *sql.DB {
 	if db == nil {
 		ConnectDB()

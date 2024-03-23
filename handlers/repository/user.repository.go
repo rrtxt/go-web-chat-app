@@ -10,7 +10,7 @@ type User struct {
 
 func (user *User) InsertToDB() (User, error) {
 	DB := database.GetDB()
-	_, err := DB.Exec(`INSERT INTO User(username, password) VALUES($1, $2)`, 
+	_, err := DB.Exec(`INSERT INTO "USER" (username, password) VALUES($1, $2)`, 
 						user.Username, user.Password)
 
 	if err != nil {

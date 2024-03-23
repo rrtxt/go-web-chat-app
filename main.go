@@ -22,4 +22,6 @@ func main() {
 	database.ConnectDB()
 
 	router.Run(address)
+
+	defer database.CloseDB()
 }
