@@ -1,6 +1,10 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"projects/web-chat-app/handlers"
+
+	"github.com/gin-gonic/gin"
+)
 
 func InitRoutes(router *gin.Engine) {
 	router.GET("/", func(ctx *gin.Context) {
@@ -8,5 +12,5 @@ func InitRoutes(router *gin.Engine) {
 			"message" : "Heyy",
 		})
 	})
-	router.POST("/user", )
+	router.POST("/user", handlers.AddUser)
 }

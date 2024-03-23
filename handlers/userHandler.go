@@ -5,10 +5,12 @@ import (
 	"projects/web-chat-app/handlers/repository"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserResponse struct{
 	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func AddUser(ctx *gin.Context) {
@@ -21,21 +23,30 @@ func AddUser(ctx *gin.Context) {
 
 	err = json.Unmarshal(data, &user)
 	if err != nil {
-		ctx.AbortWithStatusJSON(400, "Bad Input")
+		ctx.AbortWithStatusJSON(400, err.Error())
+		return 
+	}
+	
+	newPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil{
+		ctx.AbortWithStatusJSON(400, err.Error())
 		return 
 	}
 
+	user.Password = string(newPassword)
+
 	user, err = user.InsertToDB()
 	if err != nil{
-		ctx.AbortWithStatusJSON(400, "Failed to create new user")
+		ctx.AbortWithStatusJSON(400, err.Error())
 		return
 	} else {
-		userResponse := UserResponse{
-			Username: user.Username,
-		}
+		// userResponse := UserResponse{
+		// 	Username: user.Username,
+		// 	Password: user.Password,
+		// }
 		ctx.JSON(200, gin.H{
 			"message" : "Success create new user",
-			"user" : userResponse,
+			"user" : user,
 		})
 	}
 }

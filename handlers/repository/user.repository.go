@@ -5,13 +5,13 @@ import "projects/web-chat-app/database"
 type User struct {
 	ID       int64
 	Username string
-	Password []byte
+	Password string
 }
 
 func (user *User) InsertToDB() (User, error) {
 	DB := database.GetDB()
-	_, err := DB.Exec(`INSERT INTO User(ID, username, password) VALUES($1, $2, $3)`, 
-						user.ID, user.Username, user.Password)
+	_, err := DB.Exec(`INSERT INTO User(username, password) VALUES($1, $2)`, 
+						user.Username, user.Password)
 
 	if err != nil {
 		return User{}, err
