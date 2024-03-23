@@ -24,7 +24,7 @@ func ConnectDB() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	
 	db = client
 }
 

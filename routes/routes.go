@@ -8,4 +8,5 @@ func InitRoutes(router *gin.Engine) {
 			"message" : "Heyy",
 		})
 	})
+	router.POST("/user", )
 }
