@@ -34,8 +34,11 @@ func CloseDB(){
 
 func GetDB() *sql.DB {
 	if db == nil {
+		log.Printf("DB is not connected")
 		ConnectDB()
 	}
+
+	log.Println("DB is already connected")
 
 	return db
 }

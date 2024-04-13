@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
-	"projects/web-chat-app/handlers/repository"
+	"log"
+	repository "projects/web-chat-app/repositories"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -26,6 +27,16 @@ func AddUser(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(400, err.Error())
 		return 
 	}
+
+	userFromDB, _ := repository.GetUserFromDB(user.Username)
+	if userFromDB != nil {
+		ctx.AbortWithStatusJSON(409, gin.H{
+			"status" : "Failed",
+			"message" : "Account already exists",
+			"data" : userFromDB,
+		})
+		return
+	}
 	
 	newPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil{
@@ -40,13 +51,21 @@ func AddUser(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(400, err.Error())
 		return
 	} else {
-		// userResponse := UserResponse{
-		// 	Username: user.Username,
-		// 	Password: user.Password,
-		// }
 		ctx.JSON(200, gin.H{
 			"message" : "Success create new user",
 			"user" : user,
 		})
 	}
+}
+
+func GetUserbyUsername(ctx *gin.Context){
+	user, err := repository.GetUserFromDB("Test2")
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	ctx.JSON(200, gin.H{
+		"user" : *user,
+	})
 }

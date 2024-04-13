@@ -12,5 +12,6 @@ func InitRoutes(router *gin.Engine) {
 			"message" : "Heyy",
 		})
 	})
+	router.GET("/user", handlers.GetUserbyUsername)
 	router.POST("/user", handlers.AddUser)
 }
