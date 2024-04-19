@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"log"
-	repository "projects/web-chat-app/repositories"
+	"projects/web-chat-app/repositories"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -15,7 +15,7 @@ type UserResponse struct{
 }
 
 func AddUser(ctx *gin.Context) {
-	user := repository.User{}
+	user := repositories.User{}
 	data, err := ctx.GetRawData()
 	if err != nil {
 		ctx.AbortWithStatusJSON(400, "User is not defined")
@@ -28,7 +28,7 @@ func AddUser(ctx *gin.Context) {
 		return 
 	}
 
-	userFromDB, _ := repository.GetUserFromDB(user.Username)
+	userFromDB, _ := repositories.GetUserFromDB(user.Username)
 	if userFromDB != nil {
 		ctx.AbortWithStatusJSON(409, gin.H{
 			"status" : "Failed",
@@ -59,7 +59,7 @@ func AddUser(ctx *gin.Context) {
 }
 
 func GetUserbyUsername(ctx *gin.Context){
-	user, err := repository.GetUserFromDB("Test2")
+	user, err := repositories.GetUserFromDB("Test2")
 
 	if err != nil {
 		log.Println(err)
