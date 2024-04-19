@@ -9,11 +9,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserResponse struct{
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 func AddUser(ctx *gin.Context) {
 	user := repositories.User{}
 	data, err := ctx.GetRawData()
@@ -52,6 +47,7 @@ func AddUser(ctx *gin.Context) {
 		return
 	} else {
 		ctx.JSON(200, gin.H{
+			"status" : "Success",
 			"message" : "Success create new user",
 			"user" : user,
 		})

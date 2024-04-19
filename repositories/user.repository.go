@@ -4,13 +4,10 @@ import (
 	"database/sql"
 	"log"
 	"projects/web-chat-app/database"
+	"projects/web-chat-app/models"
 )
 
-type User struct {
-	ID       int64
-	Username string
-	Password string
-}
+type User models.User
 
 func (user *User) InsertToDB() (User, error) {
 	DB := database.GetDB()

@@ -7,11 +7,7 @@ import (
 )
 
 func InitRoutes(router *gin.Engine) {
-	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message" : "Heyy",
-		})
-	})
 	router.GET("/user", handlers.GetUserbyUsername)
 	router.POST("/user", handlers.AddUser)
+	router.POST("/login", handlers.UserLogin)
 }
