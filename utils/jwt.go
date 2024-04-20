@@ -10,13 +10,18 @@ import (
 	"os"
 )
 
+type JWT interface{
+	Encode() (string, error)
+	Verify(string) 
+}
+
 type JWTClaims struct {
 	Id string
 	Name string
 	Iat int64
 }
 
-func JWTEncode(jwt JWTClaims) (string, error) {
+func (jwt *JWTClaims) Encode() (string, error) {
 	header := `{ "alg": "HS256", "typ": "JWT" }`
 
 	payload, err := json.Marshal(jwt)

@@ -55,7 +55,9 @@ func UserLogin(ctx *gin.Context){
 		return
 	}
 
-	token, err := utils.JWTEncode(utils.JWTClaims{Id: user.ID.String(), Name: user.Username})
+	claims := utils.JWTClaims{Id: user.ID.String(), Name: user.Username}
+	token, err := claims.Encode()
+	
 	if err != nil {
 		ctx.AbortWithStatusJSON(400, gin.H{
 			"status" : "Failed",
