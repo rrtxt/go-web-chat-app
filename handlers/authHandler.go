@@ -1,9 +1,13 @@
 package handlers
 
 import (
+	"log"
 	"projects/web-chat-app/models"
+	"projects/web-chat-app/repositories"
+	"projects/web-chat-app/utils"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func UserLogin(ctx *gin.Context){
@@ -20,11 +24,49 @@ func UserLogin(ctx *gin.Context){
 		return
 	}
 
-	// var user models.User
+	user, err := repositories.GetUserFromDB(userRequest.Username)
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{
+			"status" : "Failed",
+			"message" : "Error on fetching data",
+		})
+		return 
+	}
+
+	if user == nil {
+		ctx.AbortWithStatusJSON(404, gin.H{
+			"status" : "Failed",
+			"message" : "User not found",
+		})
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userRequest.Password)); err != nil {
+		resPwd, err := bcrypt.GenerateFromPassword([]byte(userRequest.Password), bcrypt.DefaultCost)
+		if err != nil{
+			log.Println(err.Error())
+		}
+		ctx.AbortWithStatusJSON(401, gin.H{
+			"status" : "Failed",
+			"message" : "Wrong Password",
+			"user" : (user.Password),
+			"userReq" : resPwd,
+		})
+		return
+	}
+
+	token, err := utils.JWTEncode(utils.JWTClaims{Id: user.ID.String(), Name: user.Username})
+	if err != nil {
+		ctx.AbortWithStatusJSON(400, gin.H{
+			"status" : "Failed",
+			"message" : "Something went wrong!",
+		})
+	}
 
 	ctx.JSON(200, gin.H{
 		"status" : "Success",
-		"Message" : "Success Login",
-		"data" : userRequest,
+		"message" : "Success Login",
+		"data" : user,
+		"token" : token,
 	})
 }

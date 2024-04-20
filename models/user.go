@@ -1,9 +1,11 @@
 package models
 
+import "github.com/google/uuid"
+
 type User struct {
-	ID       int64
+	ID       uuid.UUID
 	Username string
-	Password string
+	Password string 
 }
 
 type UserRequest struct {

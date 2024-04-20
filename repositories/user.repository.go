@@ -11,8 +11,8 @@ type User models.User
 
 func (user *User) InsertToDB() (User, error) {
 	DB := database.GetDB()
-	_, err := DB.Exec(`INSERT INTO "USER" (username, password) VALUES($1, $2)`, 
-						user.Username, user.Password)
+	_, err := DB.Exec(`INSERT INTO "USER" (id, username, password) VALUES($1, $2, $3)`, 
+						user.ID, user.Username, user.Password)
 
 	if err != nil {
 		return User{}, err
@@ -23,10 +23,10 @@ func (user *User) InsertToDB() (User, error) {
  
 func GetUserFromDB(username string) (*User, error) {
 	DB := database.GetDB()
-	result := DB.QueryRow(`SELECT id,username FROM "USER" WHERE username = $1`, username)
+	result := DB.QueryRow(`SELECT id,username,password FROM "USER" WHERE username = $1`, username)
 
 	var user User
-	if err := result.Scan(&user.ID, &user.Username); err != nil{
+	if err := result.Scan(&user.ID, &user.Username, &user.Password); err != nil{
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}

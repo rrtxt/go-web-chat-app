@@ -16,12 +16,13 @@ type JWTClaims struct {
 	Iat int64
 }
 
-func JWTEncode(jwt JWTClaims) string {
+func JWTEncode(jwt JWTClaims) (string, error) {
 	header := `{ "alg": "HS256", "typ": "JWT" }`
 
 	payload, err := json.Marshal(jwt)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return "", err
 	}
 
 	signature_key := os.Getenv("SIGNATURE_KEY")
@@ -43,5 +44,5 @@ func JWTEncode(jwt JWTClaims) string {
 
 	token := headerEncoded + "." + payloadEncoded + "." + signature
 
-	return token
+	return token, nil
 }

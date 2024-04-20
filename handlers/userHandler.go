@@ -6,6 +6,7 @@ import (
 	"projects/web-chat-app/repositories"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -39,6 +40,7 @@ func AddUser(ctx *gin.Context) {
 		return 
 	}
 
+	user.ID = uuid.New()
 	user.Password = string(newPassword)
 
 	user, err = user.InsertToDB()
