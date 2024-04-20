@@ -5,7 +5,7 @@ import "github.com/google/uuid"
 type User struct {
 	ID       uuid.UUID
 	Username string
-	Password string 
+	Password string `json:"-"`
 }
 
 type UserRequest struct {

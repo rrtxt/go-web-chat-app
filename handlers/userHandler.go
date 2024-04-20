@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
+	"net/http"
 	"projects/web-chat-app/repositories"
 
 	"github.com/gin-gonic/gin"
@@ -57,13 +57,28 @@ func AddUser(ctx *gin.Context) {
 }
 
 func GetUserbyUsername(ctx *gin.Context){
-	user, err := repositories.GetUserFromDB("Test2")
-
+	data, err := ctx.GetRawData()
 	if err != nil {
-		log.Println(err)
+		ctx.AbortWithStatusJSON(400, gin.H{
+			"status": "Failed",
+			"message" : "Username field is empty",
+		})
+	}
+
+	user := repositories.User{}
+	if err := json.Unmarshal(data, &user); err != nil {
+		ctx.AbortWithStatusJSON(400, err.Error())
+	}
+
+	resultUser, err := repositories.GetUserFromDB(user.Username)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"status" : "Failed",
+			"message" : "User not found",
+		})
 	}
 
 	ctx.JSON(200, gin.H{
-		"user" : *user,
+		"user" : resultUser,
 	})
 }
